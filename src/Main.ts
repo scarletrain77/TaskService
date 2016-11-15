@@ -95,8 +95,12 @@ class Main extends egret.DisplayObjectContainer {
         sky.width = stageW;
         sky.height = stageH;
 
+        var NPC1x = 100;
+        var NPC1y = 100;
         var task:Task = new Task("000", "task1", "test for the task", "NPC1", "NPC2");
-        var NPC1:NPC = new NPC("")
+        var dialogPanel1:DialogPanel = new DialogPanel()
+        var NPC1:NPC = new NPC("NPC1", "npc_jpg", NPC1x, NPC1y, dialogPanel1);
+
         /*var service = TaskService.getInstance();
         var task = new Task("1111", "Hello world");
         task.status = TaskStatus.CAN_SUBMIT;

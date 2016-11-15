@@ -34,12 +34,26 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
         this.addChild(this._body);
         this.addChild(this._emoji);
 
-        this.touchEnabled = true;
-        
+        this.touchEnabled = false;
+        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onClick, this);
     }
 
     onChange(task: Task) {
         console.log('NPC on Change' + task.name);
+        if(task.status == TaskStatus.ACCEPTABLE && this._id == task.fromNpcId){
+            /**
+             * change!!!
+             */
+            this._emoji.alpha = 1;
+        }else if(task.status == TaskStatus.CAN_SUBMIT && this._id == task.fromNpcId){
+            this._emoji.alpha = 0;
+        }else if(task.status == TaskStatus.CAN_SUBMIT && this._id == task.toNpcId){
+            this._isEmojiQM = true;
+            this.setEmojiTexture();
+            this._emoji.alpha = 1;
+        }else if(task.status == TaskStatus.SUBMITTED && this._id == task.toNpcId){
+            this._emoji.alpha = 0;
+        }
     }
 
     init() {
@@ -66,12 +80,17 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
 
     }
 
-    private setEmojiTexture(){
+    private setEmojiTexture():void{
         if(this._isEmojiQM == true){
             this._emoji.texture = RES.getRes("questionMark_png");
         }else{
             this._emoji.texture = RES.getRes("exlamationPoint_png");
         }
+    }
+
+    private onClick(){
+        this._dialog.panelFadeIn();
+        TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
     }
 }
 

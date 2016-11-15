@@ -2,15 +2,15 @@ class Task {
     private _id: string;
     private _name: string;
     private _status: TaskStatus;
-    public desc: string;
+    private _desc: string;
     private _fromNpcId: string;
     private _toNpcId: string;
 
-    constructor(id: string, name: string, fromNpcId: string, toNpcId: string) {
+    constructor(id: string, name: string, desc:string, fromNpcId: string, toNpcId: string) {
         this._id = id;
         this._name = name;
         this._status = TaskStatus.UNACCEPTABLE;
-        this.desc = "";
+        this._desc = desc;
         this._fromNpcId = fromNpcId;
         this._toNpcId = toNpcId;
     }
@@ -35,18 +35,18 @@ class Task {
         return this._status;
     }
 
-    public set status(value: TaskStatus) {
+    public get desc():string{
+        return this._desc;
+    }
+
+    public set status(value: TaskStatus){
         this._status = value;
     }
-}
 
-
-class TaskPanel implements Observer {
-    onChange(task: Task) {
-        console.log("Panel onChange" + task.name);
+    public set desc(d:string){
+        this._desc = d;
     }
 }
-
 /*
 interface Object{
     assign(a:any, b:any);
@@ -134,8 +134,7 @@ class TaskService {
     }
 
     public addTask(task: Task) {
-        var a = this.taskList["111"];
-
+       // var a = this.taskList["111"];
         this.taskList[task.id] = task;
     }
 
@@ -149,12 +148,4 @@ class TaskService {
         }
     }
 
-}
-
-enum TaskStatus {
-    UNACCEPTABLE,
-    ACCEPTABLE,
-    DURING,
-    CAN_SUBMIT,
-    SUBMITTED
 }

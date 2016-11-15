@@ -95,12 +95,9 @@ class Main extends egret.DisplayObjectContainer {
         sky.width = stageW;
         sky.height = stageH;
 
-        /**
-         * new change
-         */
-
-
-        var service = TaskService.getInstance();
+        var task:Task = new Task("000", "task1", "test for the task", "NPC1", "NPC2");
+        var NPC1:NPC = new NPC("")
+        /*var service = TaskService.getInstance();
         var task = new Task("1111", "Hello world");
         task.status = TaskStatus.CAN_SUBMIT;
         service.addTask(task);
@@ -112,7 +109,7 @@ class Main extends egret.DisplayObjectContainer {
         if (result != 0) {
             alert("error!" + result);
             return;
-        }
+        }*/
     }
 
     /**
@@ -127,51 +124,4 @@ class Main extends egret.DisplayObjectContainer {
     }
 
 }
-
-class NPC implements Observer {
-    private taskService: TaskService;
-
-    /*constructor(s: TaskService) {
-        this.taskService = s;
-    }*/
-    constructor(){
-
-    }
-
-    onChange(task: Task) {
-        console.log('NPC on Change' + task.name);
-    }
-
-    init() {
-
-        //var service = new TaskService();
-        let rule = (taskList) => {
-            for (var id in taskList) {
-                var task = taskList[id];
-                if (task.status == TaskStatus.CAN_SUBMIT) {
-                    return task;
-                }
-            }
-            for (var id in taskList) {
-                var task = taskList[id];
-                if (task.status == TaskStatus.ACCEPTABLE) {
-                    return task;
-                }
-            }
-        }
-
-        var service = TaskService.getInstance();
-        service.getTaskByCustomRule(rule);
-        //this.taskService.getTaskByCustomRole(rule);
-
-    }
-}
-
-
-
-enum ErrorCode {
-    SUCCESS,
-    ERROR_TASK
-}
-
 

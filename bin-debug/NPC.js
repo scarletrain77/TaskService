@@ -15,12 +15,12 @@ var NPC = (function (_super) {
         this._dialog.x = -this._body.width / 8;
         this._dialog.y = -this._body.height * 3 / 4;
         // console.log("id:" + this._id + "x:" + this._dialog.x + "y:" + this._dialog.y);
-        this._isEmojiQM = true;
+        this._isEmojiQM = false;
         this._emoji = new egret.Bitmap();
         this.setEmojiTexture();
         this._emoji.x = this._body.x;
         this._emoji.y = this._body.y - this._emoji.height;
-        this._emoji.alpha = 1;
+        this.changeEmojiState(TaskService.getInstance().taskList["000"]);
         this.addChild(this._body);
         this.addChild(this._emoji);
         this.addChild(this._dialog);
@@ -31,21 +31,45 @@ var NPC = (function (_super) {
     var d = __define,c=NPC,p=c.prototype;
     p.onChange = function (task) {
         console.log('NPC on Change' + task.name);
-        if (task.status == TaskStatus.ACCEPTABLE && this._id == task.fromNpcId) {
-            this._isEmojiQM = true;
-            this.setEmojiTexture();
-            this.emojiFadeIn();
+        this.changeEmojiState(task);
+    };
+    p.changeEmojiState = function (task) {
+        if (this._id == task.fromNpcId) {
+            if (task.status == TaskStatus.UNACCEPTABLE) {
+                this.emojiFadeOut();
+            }
+            else if (task.status == TaskStatus.ACCEPTABLE) {
+                this._isEmojiQM = false;
+                this.setEmojiTexture();
+                this.emojiFadeIn();
+            }
+            else if (task.status == TaskStatus.DURING) {
+                this.emojiFadeOut();
+            }
+            else if (task.status == TaskStatus.CAN_SUBMIT) {
+                this.emojiFadeOut();
+            }
+            else if (task.status == TaskStatus.SUBMITTED) {
+                this.emojiFadeOut();
+            }
         }
-        else if ((task.status == TaskStatus.CAN_SUBMIT || TaskStatus.DURING) && this._id == task.fromNpcId) {
-            this.emojiFadeOut();
-        }
-        else if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.toNpcId) {
-            this._isEmojiQM = false;
-            this.setEmojiTexture();
-            this.emojiFadeIn();
-        }
-        else if (task.status == TaskStatus.SUBMITTED && this._id == task.toNpcId) {
-            this.emojiFadeOut();
+        else {
+            if (task.status == TaskStatus.CAN_SUBMIT) {
+                this._isEmojiQM = false;
+                this.setEmojiTexture();
+                this.emojiFadeIn();
+            }
+            else if (task.status == TaskStatus.SUBMITTED) {
+                this.emojiFadeOut();
+            }
+            else if (task.status == TaskStatus.DURING) {
+                this._isEmojiQM = true;
+                this.setEmojiTexture();
+                this.emojiFadeIn();
+            }
+            else if (task.status == TaskStatus.ACCEPTABLE) {
+                this.emojiFadeOut();
+            }
         }
     };
     /**

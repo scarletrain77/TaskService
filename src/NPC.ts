@@ -23,14 +23,15 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
         this._dialog = new DialogPanel(dialog);
         this._dialog.x = - this._body.width / 8;
         this._dialog.y = - this._body.height * 3 / 4;
-    // console.log("id:" + this._id + "x:" + this._dialog.x + "y:" + this._dialog.y);
+        // console.log("id:" + this._id + "x:" + this._dialog.x + "y:" + this._dialog.y);
 
-        this._isEmojiQM = true;
+        this._isEmojiQM = false;
         this._emoji = new egret.Bitmap();
         this.setEmojiTexture();
         this._emoji.x = this._body.x;
         this._emoji.y = this._body.y - this._emoji.height;
-        this._emoji.alpha = 1;
+       
+        this.changeEmojiState(TaskService.getInstance().taskList["000"]);
 
         this.addChild(this._body);
         this.addChild(this._emoji);
@@ -44,27 +45,45 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
 
     onChange(task: Task) {
         console.log('NPC on Change' + task.name);
-        if (task.status == TaskStatus.ACCEPTABLE && this._id == task.fromNpcId) {
-            this._isEmojiQM = true;
-            this.setEmojiTexture();
-            this.emojiFadeIn();
-           // this._dialog.panelFadeIn();
-        } else if ((task.status == TaskStatus.CAN_SUBMIT || TaskStatus.DURING) && this._id == task.fromNpcId) {
-            this.emojiFadeOut();
-        } else if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.toNpcId) {
-            this._isEmojiQM = false;
-            this.setEmojiTexture();
-            this.emojiFadeIn();
-            //this._dialog.panelFadeIn();
-        } else if (task.status == TaskStatus.SUBMITTED && this._id == task.toNpcId) {
-            this.emojiFadeOut();
-        }
-        
+        this.changeEmojiState(task);
     }
 
-/**
- * 找到第一个状态为可提交的，如果没有就找已经接受了的
- */
+    private changeEmojiState(task: Task):void {
+        if (this._id == task.fromNpcId) {
+            if (task.status == TaskStatus.UNACCEPTABLE) {
+                this.emojiFadeOut();
+            } else if (task.status == TaskStatus.ACCEPTABLE) {
+                this._isEmojiQM = false;
+                this.setEmojiTexture();
+                this.emojiFadeIn();
+            } else if (task.status == TaskStatus.DURING) {
+                this.emojiFadeOut();
+            } else if (task.status == TaskStatus.CAN_SUBMIT) {
+                this.emojiFadeOut();
+            } else if (task.status == TaskStatus.SUBMITTED) {
+                this.emojiFadeOut();
+            }
+        } else {
+            if (task.status == TaskStatus.CAN_SUBMIT) {
+                this._isEmojiQM = false;
+                this.setEmojiTexture();
+                this.emojiFadeIn();
+            } else if (task.status == TaskStatus.SUBMITTED) {
+                this.emojiFadeOut();
+            } else if (task.status == TaskStatus.DURING) {
+                this._isEmojiQM = true;
+                this.setEmojiTexture();
+                this.emojiFadeIn();
+            } else if (task.status == TaskStatus.ACCEPTABLE) {
+                this.emojiFadeOut();
+            }
+        }
+
+    }
+
+    /**
+     * 找到第一个状态为可提交的，如果没有就找已经接受了的
+     */
     init() {
         let rule = (taskList) => {
             for (var id in taskList) {
@@ -109,12 +128,12 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
 
     private onClick() {
         //this._dialog.panelFadeIn();
-         if (TaskService.getInstance().taskList["000"].status == TaskStatus.ACCEPTABLE && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
+        if (TaskService.getInstance().taskList["000"].status == TaskStatus.ACCEPTABLE && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
             this._dialog.panelFadeIn();
         } else if (TaskService.getInstance().taskList["000"].status == TaskStatus.CAN_SUBMIT && this._id == TaskService.getInstance().taskList["000"].toNpcId) {
             this._dialog.panelFadeIn();
-        } 
-         if (TaskService.getInstance().taskList["000"].status == TaskStatus.DURING && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
+        }
+        if (TaskService.getInstance().taskList["000"].status == TaskStatus.DURING && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
             TaskService.getInstance().taskList["000"].status = TaskStatus.CAN_SUBMIT;
         }
         TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);

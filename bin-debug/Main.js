@@ -84,11 +84,11 @@ var Main = (function (_super) {
         var NPC2x = 400;
         var NPC2y = 300;
         //var taskService:TaskService = new TaskService();       
+        var task = new Task("000", "task1", "press NPC1 to finish task", "npc_0", "npc_1");
+        TaskService.getInstance().addTask(task);
         var NPC_1 = new NPC("npc_0", "NPC1_png", NPC1x, NPC1y, "press the button \nto get task");
         var NPC_2 = new NPC("npc_1", "NPC2_png", NPC2x, NPC2y, "press the button \nif you finish task");
-        var task = new Task("000", "task1", "press NPC1 to finish task", "npc_0", "npc_1");
         var taskPanel = new TaskPanel(20, NPC2y + 500);
-        TaskService.getInstance().addTask(task);
         TaskService.getInstance().addObserver(taskPanel);
         TaskService.getInstance().addObserver(NPC_1);
         TaskService.getInstance().addObserver(NPC_2);

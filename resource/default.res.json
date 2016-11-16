@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "bg_jpg,description_json,questionMark_png,exclamationPoint_png",
+			"keys": "bg_jpg,description_json,questionMark_png,exclamationPoint_png,NPC1_png,NPC2_png",
 			"name": "preload"
 		}
 	],
@@ -25,6 +25,16 @@
 			"name": "exclamationPoint_png",
 			"type": "image",
 			"url": "assets/exclamationPoint.png"
+		},
+		{
+			"name": "NPC1_png",
+			"type": "image",
+			"url": "assets/NPC1.png"
+		},
+		{
+			"name": "NPC2_png",
+			"type": "image",
+			"url": "assets/NPC2.png"
 		}
 	]
 }

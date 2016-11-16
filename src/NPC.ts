@@ -17,24 +17,27 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
         this.y = y;
 
         this._dialog = dialog;
+        this._dialog.x = x;
+        this._dialog.y = y+100;
 
         this._body = new egret.Bitmap();
         this._body.texture = RES.getRes(bitmap);
         this._body.x = 0;
         this._body.y = 0;
-        this._body.alpha = 0;
+        this._body.width = 300;
+        this._body.height = 300;
 
-        this._isEmojiQM = true;
+        this._isEmojiQM = false;
         this._emoji = new egret.Bitmap();
         this.setEmojiTexture();
         this._emoji.x = this._body.x;
-        this._emoji.y = this._body.y-20;
-        this._emoji.alpha = 0;
+        this._emoji.y = this._body.y - this._emoji.height;
 
         this.addChild(this._body);
         this.addChild(this._emoji);
+        this.addChild(this._dialog);
 
-        this.touchEnabled = false;
+        this.touchEnabled = true;
         this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onClick, this);
     }
 
@@ -84,7 +87,7 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
         if(this._isEmojiQM == true){
             this._emoji.texture = RES.getRes("questionMark_png");
         }else{
-            this._emoji.texture = RES.getRes("exlamationPoint_png");
+            this._emoji.texture = RES.getRes("exclamationPoint_png");
         }
     }
 

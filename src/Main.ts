@@ -95,12 +95,27 @@ class Main extends egret.DisplayObjectContainer {
         sky.width = stageW;
         sky.height = stageH;
 
-        var NPC1x = 100;
-        var NPC1y = 100;
-        var task:Task = new Task("000", "task1", "test for the task", "NPC1", "NPC2");
-        var dialogPanel1:DialogPanel = new DialogPanel()
-        var NPC1:NPC = new NPC("NPC1", "npc_jpg", NPC1x, NPC1y, dialogPanel1);
+        var NPC1x = 0;
+        var NPC1y = 300;
+        var NPC2x = 400;
+        var NPC2y = 300;
+        var task: Task = new Task("000", "task1", "test for the task", "NPC1", "NPC2");
+        var dialogPanel1: DialogPanel = new DialogPanel();
+        var dialogPanel2: DialogPanel = new DialogPanel();
+        var NPC1: NPC = new NPC("NPC1", "NPC1_png", NPC1x, NPC1y, dialogPanel1);
+        NPC1.init();
+        var NPC2: NPC = new NPC("NPC2", "NPC2_png", NPC2x, NPC2y, dialogPanel2);
+        NPC2.init();
+        TaskService.getInstance().addTask(task);
+        var taskPanel: TaskPanel = new TaskPanel(100, 100);
+        TaskService.getInstance().addObserver(taskPanel);
+        TaskService.getInstance().addObserver(NPC1);
+        TaskService.getInstance().addObserver(NPC2);
 
+        this.addChild(NPC1);
+        this.addChild(NPC2);
+        this.addChild(taskPanel);
+        //TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
         /*var service = TaskService.getInstance();
         var task = new Task("1111", "Hello world");
         task.status = TaskStatus.CAN_SUBMIT;

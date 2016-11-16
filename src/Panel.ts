@@ -44,11 +44,8 @@ class DialogPanel extends egret.DisplayObjectContainer {
     private _buttonText: egret.TextField;
     private _body: egret.Shape;
 
-    constructor(x: number, y: number) {
+    constructor() {
         super();
-
-        this.x = x;
-        this.y = y;
 
         var widthRec = 200;
         var heightRec = 200;

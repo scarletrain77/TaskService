@@ -9,7 +9,7 @@ class Task {
     constructor(id: string, name: string, desc:string, fromNpcId: string, toNpcId: string) {
         this._id = id;
         this._name = name;
-        this._status = TaskStatus.UNACCEPTABLE;
+        this._status = TaskStatus.ACCEPTABLE;
         this._desc = desc;
         this._fromNpcId = fromNpcId;
         this._toNpcId = toNpcId;
@@ -66,7 +66,6 @@ class TaskService {
         //"001":new Task("001", "a", "001", "002"),
         //"002":new Task("002", "b", "003", "004")
     };
-    //private taskList:TaskList[] = [];
 
     constructor() {
         TaskService.count++;

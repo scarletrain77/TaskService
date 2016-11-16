@@ -14,11 +14,11 @@ var NPC = (function (_super) {
         this._body.y = 0;
         this._body.width = 300;
         this._body.height = 300;
-        this._dialog = dialog;
+        this._dialog = new DialogPanel(dialog);
         this._dialog.x = -this._body.width / 8;
         this._dialog.y = -this._body.height * 3 / 4;
-        console.log("id:" + this._id + "x:" + this._dialog.x + "y:" + this._dialog.y);
-        this._isEmojiQM = false;
+        // console.log("id:" + this._id + "x:" + this._dialog.x + "y:" + this._dialog.y);
+        this._isEmojiQM = true;
         this._emoji = new egret.Bitmap();
         this.setEmojiTexture();
         this._emoji.x = this._body.x;
@@ -29,6 +29,7 @@ var NPC = (function (_super) {
         this.addChild(this._dialog);
         this.touchEnabled = true;
         this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onClick, this);
+        this.init();
     }
     var d = __define,c=NPC,p=c.prototype;
     p.onChange = function (task) {
@@ -36,11 +37,11 @@ var NPC = (function (_super) {
         if (task.status == TaskStatus.ACCEPTABLE && this._id == task.fromNpcId) {
             this.emojiFadeIn();
         }
-        else if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.fromNpcId) {
+        else if ((task.status == TaskStatus.CAN_SUBMIT || TaskStatus.DURING) && this._id == task.fromNpcId) {
             this.emojiFadeOut();
         }
         else if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.toNpcId) {
-            this._isEmojiQM = true;
+            this._isEmojiQM = false;
             this.setEmojiTexture();
             this.emojiFadeIn();
         }
@@ -48,8 +49,10 @@ var NPC = (function (_super) {
             this.emojiFadeOut();
         }
     };
+    /**
+     * 找到第一个状态为可提交的，如果没有就找已经接受了的
+     */
     p.init = function () {
-        //var service = new TaskService();
         var rule = function (taskList) {
             for (var id in taskList) {
                 var task = taskList[id];
@@ -64,8 +67,7 @@ var NPC = (function (_super) {
                 }
             }
         };
-        var service = TaskService.getInstance();
-        service.getTaskByCustomRule(rule);
+        TaskService.getInstance().getTaskByCustomRule(rule);
         //this.taskService.getTaskByCustomRole(rule);
     };
     p.emojiFadeIn = function () {
@@ -90,6 +92,9 @@ var NPC = (function (_super) {
     };
     p.onClick = function () {
         this._dialog.panelFadeIn();
+        if (TaskService.getInstance().taskList["000"].status == TaskStatus.DURING) {
+            TaskService.getInstance().taskList["000"].status = TaskStatus.CAN_SUBMIT;
+        }
         TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
     };
     return NPC;

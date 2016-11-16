@@ -99,15 +99,14 @@ class Main extends egret.DisplayObjectContainer {
         var NPC1y = 300;
         var NPC2x = 400;
         var NPC2y = 300;
-        var task: Task = new Task("000", "task1", "test for the task", "NPC1", "NPC2");
-        var dialogPanel1: DialogPanel = new DialogPanel();
-        var dialogPanel2: DialogPanel = new DialogPanel();
-        var NPC1: NPC = new NPC("NPC1", "NPC1_png", NPC1x, NPC1y, dialogPanel1);
-        NPC1.init();
-        var NPC2: NPC = new NPC("NPC2", "NPC2_png", NPC2x, NPC2y, dialogPanel2);
-        NPC2.init();
-        TaskService.getInstance().addTask(task);
+        
+        //var taskService:TaskService = new TaskService();       
+        var NPC1: NPC = new NPC("npc_0", "NPC1_png", NPC1x, NPC1y, "get task");
+        var NPC2: NPC = new NPC("npc_1", "NPC2_png", NPC2x, NPC2y, "finish task");
+        var task: Task = new Task("000", "task1", "test for the task", "npc_0", "npc_1");
         var taskPanel: TaskPanel = new TaskPanel(20, NPC2y+500);
+
+        TaskService.getInstance().addTask(task);
         TaskService.getInstance().addObserver(taskPanel);
         TaskService.getInstance().addObserver(NPC1);
         TaskService.getInstance().addObserver(NPC2);

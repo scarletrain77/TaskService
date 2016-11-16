@@ -9,7 +9,7 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
     /*constructor(s: TaskService) {
         this.taskService = s;
     }*/
-    constructor(id: string, bitmap: string, x: number, y: number, dialog: DialogPanel) {
+    constructor(id: string, bitmap: string, x: number, y: number, dialog: string) {
         super();
         this._id = id;
 
@@ -23,12 +23,12 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
         this._body.width = 300;
         this._body.height = 300;
 
-        this._dialog = dialog;
-        this._dialog.x = - this._body.width/8;
-        this._dialog.y = - this._body.height*3/4;
-        console.log("id:" + this._id + "x:" + this._dialog.x + "y:" +  this._dialog.y);
+        this._dialog = new DialogPanel(dialog);
+        this._dialog.x = - this._body.width / 8;
+        this._dialog.y = - this._body.height * 3 / 4;
+    // console.log("id:" + this._id + "x:" + this._dialog.x + "y:" + this._dialog.y);
 
-        this._isEmojiQM = false;
+        this._isEmojiQM = true;
         this._emoji = new egret.Bitmap();
         this.setEmojiTexture();
         this._emoji.x = this._body.x;
@@ -41,26 +41,30 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
 
         this.touchEnabled = true;
         this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onClick, this);
+
+        this.init();
     }
 
     onChange(task: Task) {
         console.log('NPC on Change' + task.name);
         if (task.status == TaskStatus.ACCEPTABLE && this._id == task.fromNpcId) {
             this.emojiFadeIn();
-        } else if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.fromNpcId) {
+        } else if ((task.status == TaskStatus.CAN_SUBMIT||TaskStatus.DURING) && this._id == task.fromNpcId) {
             this.emojiFadeOut();
         } else if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.toNpcId) {
-            this._isEmojiQM = true;
+            this._isEmojiQM = false;
             this.setEmojiTexture();
             this.emojiFadeIn();
         } else if (task.status == TaskStatus.SUBMITTED && this._id == task.toNpcId) {
             this.emojiFadeOut();
         }
+        
     }
 
+/**
+ * 找到第一个状态为可提交的，如果没有就找已经接受了的
+ */
     init() {
-
-        //var service = new TaskService();
         let rule = (taskList) => {
             for (var id in taskList) {
                 var task = taskList[id];
@@ -75,24 +79,22 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
                 }
             }
         }
-
-        var service = TaskService.getInstance();
-        service.getTaskByCustomRule(rule);
+        TaskService.getInstance().getTaskByCustomRule(rule);
         //this.taskService.getTaskByCustomRole(rule);
 
     }
 
-    private emojiFadeIn():void{
-        var tw:egret.Tween = egret.Tween.get(this._emoji);
-        if(this._emoji.alpha == 0){
-            tw.to({"alpha":1}, 500);
+    private emojiFadeIn(): void {
+        var tw: egret.Tween = egret.Tween.get(this._emoji);
+        if (this._emoji.alpha == 0) {
+            tw.to({ "alpha": 1 }, 500);
         }
     }
 
-    private emojiFadeOut():void{
-        var tw:egret.Tween = egret.Tween.get(this._emoji);
-        if(this._emoji.alpha == 1){
-            tw.to({"alpha":0}, 500);
+    private emojiFadeOut(): void {
+        var tw: egret.Tween = egret.Tween.get(this._emoji);
+        if (this._emoji.alpha == 1) {
+            tw.to({ "alpha": 0 }, 500);
         }
     }
 
@@ -106,6 +108,9 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
 
     private onClick() {
         this._dialog.panelFadeIn();
+         if (TaskService.getInstance().taskList["000"].status == TaskStatus.DURING) {
+            TaskService.getInstance().taskList["000"].status = TaskStatus.CAN_SUBMIT;
+        }
         TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
     }
 }

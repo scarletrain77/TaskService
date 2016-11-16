@@ -49,7 +49,7 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
             this.setEmojiTexture();
             this.emojiFadeIn();
            // this._dialog.panelFadeIn();
-        } else if ((task.status == TaskStatus.CAN_SUBMIT) && this._id == task.fromNpcId) {
+        } else if ((task.status == TaskStatus.CAN_SUBMIT || TaskStatus.DURING) && this._id == task.fromNpcId) {
             this.emojiFadeOut();
         } else if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.toNpcId) {
             this._isEmojiQM = false;

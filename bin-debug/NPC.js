@@ -1,8 +1,5 @@
 var NPC = (function (_super) {
     __extends(NPC, _super);
-    /*constructor(s: TaskService) {
-        this.taskService = s;
-    }*/
     function NPC(id, bitmap, x, y, dialog) {
         _super.call(this);
         this._id = id;
@@ -39,7 +36,7 @@ var NPC = (function (_super) {
             this.setEmojiTexture();
             this.emojiFadeIn();
         }
-        else if ((task.status == TaskStatus.CAN_SUBMIT) && this._id == task.fromNpcId) {
+        else if ((task.status == TaskStatus.CAN_SUBMIT || TaskStatus.DURING) && this._id == task.fromNpcId) {
             this.emojiFadeOut();
         }
         else if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.toNpcId) {

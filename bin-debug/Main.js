@@ -91,13 +91,13 @@ var Main = (function (_super) {
         var NPC2 = new NPC("NPC2", "NPC2_png", NPC2x, NPC2y, dialogPanel2);
         NPC2.init();
         TaskService.getInstance().addTask(task);
-        var taskPanel = new TaskPanel(100, 100);
+        var taskPanel = new TaskPanel(20, NPC2y + 500);
         TaskService.getInstance().addObserver(taskPanel);
         TaskService.getInstance().addObserver(NPC1);
         TaskService.getInstance().addObserver(NPC2);
+        this.addChild(taskPanel);
         this.addChild(NPC1);
         this.addChild(NPC2);
-        this.addChild(taskPanel);
         //TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
         /*var service = TaskService.getInstance();
         var task = new Task("1111", "Hello world");

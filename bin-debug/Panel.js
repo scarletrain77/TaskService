@@ -24,7 +24,7 @@ var TaskPanel = (function (_super) {
         this._statusText = new egret.TextField();
         this._statusText.text = "Status";
         this._statusText.textColor = 0x000000;
-        this._statusText.x = panelWidth / 2;
+        this._statusText.x = panelWidth * 3 / 4;
         this._statusText.y = 0;
         this._statusListText = new egret.TextField();
         this._statusListText.text = "";
@@ -98,6 +98,7 @@ var DialogPanel = (function (_super) {
         else {
             console.log("no taskStatus");
         }
+        this.panelFadeOut();
         TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
     };
     return DialogPanel;

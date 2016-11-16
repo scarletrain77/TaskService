@@ -35,9 +35,11 @@ var NPC = (function (_super) {
     p.onChange = function (task) {
         console.log('NPC on Change' + task.name);
         if (task.status == TaskStatus.ACCEPTABLE && this._id == task.fromNpcId) {
+            this._isEmojiQM = true;
+            this.setEmojiTexture();
             this.emojiFadeIn();
         }
-        else if ((task.status == TaskStatus.CAN_SUBMIT || TaskStatus.DURING) && this._id == task.fromNpcId) {
+        else if ((task.status == TaskStatus.CAN_SUBMIT) && this._id == task.fromNpcId) {
             this.emojiFadeOut();
         }
         else if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.toNpcId) {
@@ -91,8 +93,14 @@ var NPC = (function (_super) {
         }
     };
     p.onClick = function () {
-        this._dialog.panelFadeIn();
-        if (TaskService.getInstance().taskList["000"].status == TaskStatus.DURING) {
+        //this._dialog.panelFadeIn();
+        if (TaskService.getInstance().taskList["000"].status == TaskStatus.ACCEPTABLE && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
+            this._dialog.panelFadeIn();
+        }
+        else if (TaskService.getInstance().taskList["000"].status == TaskStatus.CAN_SUBMIT && this._id == TaskService.getInstance().taskList["000"].toNpcId) {
+            this._dialog.panelFadeIn();
+        }
+        if (TaskService.getInstance().taskList["000"].status == TaskStatus.DURING && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
             TaskService.getInstance().taskList["000"].status = TaskStatus.CAN_SUBMIT;
         }
         TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);

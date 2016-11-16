@@ -101,20 +101,20 @@ class Main extends egret.DisplayObjectContainer {
         var NPC2y = 300;
         
         //var taskService:TaskService = new TaskService();       
-        var NPC1: NPC = new NPC("npc_0", "NPC1_png", NPC1x, NPC1y, "get task");
-        var NPC2: NPC = new NPC("npc_1", "NPC2_png", NPC2x, NPC2y, "finish task");
-        var task: Task = new Task("000", "task1", "test for the task", "npc_0", "npc_1");
+        var NPC_1: NPC = new NPC("npc_0", "NPC1_png", NPC1x, NPC1y, "press the button \nto get task");
+        var NPC_2: NPC = new NPC("npc_1", "NPC2_png", NPC2x, NPC2y, "press the button \nif you finish task");
+        var task: Task = new Task("000", "task1", "press NPC1 to finish task", "npc_0", "npc_1");
         var taskPanel: TaskPanel = new TaskPanel(20, NPC2y+500);
 
         TaskService.getInstance().addTask(task);
         TaskService.getInstance().addObserver(taskPanel);
-        TaskService.getInstance().addObserver(NPC1);
-        TaskService.getInstance().addObserver(NPC2);
+        TaskService.getInstance().addObserver(NPC_1);
+        TaskService.getInstance().addObserver(NPC_2);
 
         
         this.addChild(taskPanel);
-        this.addChild(NPC1);
-        this.addChild(NPC2);
+        this.addChild(NPC_1);
+        this.addChild(NPC_2);
         //TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
         /*var service = TaskService.getInstance();
         var task = new Task("1111", "Hello world");

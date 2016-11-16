@@ -6,9 +6,6 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
     private _emoji: egret.Bitmap;
     private _dialog: DialogPanel;
 
-    /*constructor(s: TaskService) {
-        this.taskService = s;
-    }*/
     constructor(id: string, bitmap: string, x: number, y: number, dialog: string) {
         super();
         this._id = id;
@@ -48,13 +45,17 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
     onChange(task: Task) {
         console.log('NPC on Change' + task.name);
         if (task.status == TaskStatus.ACCEPTABLE && this._id == task.fromNpcId) {
+            this._isEmojiQM = true;
+            this.setEmojiTexture();
             this.emojiFadeIn();
-        } else if ((task.status == TaskStatus.CAN_SUBMIT||TaskStatus.DURING) && this._id == task.fromNpcId) {
+           // this._dialog.panelFadeIn();
+        } else if ((task.status == TaskStatus.CAN_SUBMIT) && this._id == task.fromNpcId) {
             this.emojiFadeOut();
         } else if (task.status == TaskStatus.CAN_SUBMIT && this._id == task.toNpcId) {
             this._isEmojiQM = false;
             this.setEmojiTexture();
             this.emojiFadeIn();
+            //this._dialog.panelFadeIn();
         } else if (task.status == TaskStatus.SUBMITTED && this._id == task.toNpcId) {
             this.emojiFadeOut();
         }
@@ -107,8 +108,13 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
     }
 
     private onClick() {
-        this._dialog.panelFadeIn();
-         if (TaskService.getInstance().taskList["000"].status == TaskStatus.DURING) {
+        //this._dialog.panelFadeIn();
+         if (TaskService.getInstance().taskList["000"].status == TaskStatus.ACCEPTABLE && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
+            this._dialog.panelFadeIn();
+        } else if (TaskService.getInstance().taskList["000"].status == TaskStatus.CAN_SUBMIT && this._id == TaskService.getInstance().taskList["000"].toNpcId) {
+            this._dialog.panelFadeIn();
+        } 
+         if (TaskService.getInstance().taskList["000"].status == TaskStatus.DURING && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
             TaskService.getInstance().taskList["000"].status = TaskStatus.CAN_SUBMIT;
         }
         TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);

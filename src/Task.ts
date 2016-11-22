@@ -1,18 +1,34 @@
-class Task {
+class Task implements TaskConditionContext {
     private _id: string;
     private _name: string;
     private _status: TaskStatus;
     private _desc: string;
     private _fromNpcId: string;
     private _toNpcId: string;
+    private _current: number = 0;
 
-    constructor(id: string, name: string, desc:string, fromNpcId: string, toNpcId: string) {
+    public total: number = -1;
+    public condition: TaskCondition;
+
+    constructor(id: string, name: string, desc: string, fromNpcId: string, toNpcId: string, condition: TaskCondition) {
         this._id = id;
         this._name = name;
         this._status = TaskStatus.ACCEPTABLE;
         this._desc = desc;
         this._fromNpcId = fromNpcId;
         this._toNpcId = toNpcId;
+
+        this.condition = condition;
+        
+    }
+
+    public get current():number{
+        return this._current;
+    }
+
+    public set current(value:number){
+        this._current = value;
+        this.checkStatus();
     }
 
     public get id(): string {
@@ -35,16 +51,32 @@ class Task {
         return this._status;
     }
 
-    public get desc():string{
+    public get desc(): string {
         return this._desc;
     }
 
-    public set status(value: TaskStatus){
+    public set status(value: TaskStatus) {
         this._status = value;
     }
 
-    public set desc(d:string){
+    checkStatus() {
+       /* if(this.current > this.total){
+            console.warn();
+        }*/
+        if (this._status == TaskStatus.DURING
+            && this._current >= this.total) {
+                this._status = TaskStatus.CAN_SUBMIT;
+        }
+        //notify
+        TaskService.getInstance().notify(this);
+    }
+
+    public set desc(d: string) {
         this._desc = d;
+    }
+
+    public onAccept() {
+        this.condition.onAccept(this);
     }
 }
 /*
@@ -87,8 +119,12 @@ class TaskService {
     public getTaskByCustomRule(rule: Function): Task {
         //var clone = Object.assign({}, this.taskList);
         //return rule(clone);
+        /*var canvas:HTMLCanvasElement;
+        var context = canvas.getContext("2d");*/
         return rule(this.taskList);
     }
+
+
 
     /*public getTaskByCustonRule(rule:Function):Task{
         return
@@ -106,7 +142,7 @@ class TaskService {
         }
     }*/
 
-    public finish(id: string): ErrorCode {
+    public submit(id: string): ErrorCode {
         if (!id) {
             return ErrorCode.ERROR_TASK;
         }
@@ -114,7 +150,31 @@ class TaskService {
         if (!task) {
             return ErrorCode.SUCCESS;
         }
-        console.log("finish" + id);
+        console.log("accept" + id);
+        if (task.status == TaskStatus.ACCEPTABLE) {
+            task.status = TaskStatus.DURING;
+            task.onAccept();
+            this.notify(task);
+            return ErrorCode.SUCCESS;
+        } else {
+            return ErrorCode.ERROR_TASK;
+        }
+    }
+
+    public accept(id: string) {
+        /*var temp:Task = this.taskList[id];
+        if(temp.status == TaskStatus.ACCEPTABLE){
+            temp.status = TaskStatus.DURING;
+        }
+        this.notify(temp);*/
+        if (!id) {
+            return ErrorCode.ERROR_TASK;
+        }
+        let task = this.taskList[id];
+        if (!task) {
+            return ErrorCode.SUCCESS;
+        }
+        console.log("accept" + id);
         if (task.status == TaskStatus.CAN_SUBMIT) {
             task.status = TaskStatus.SUBMITTED;
             this.notify(task);
@@ -124,16 +184,8 @@ class TaskService {
         }
     }
 
-    public accept(id: string): void {
-       var temp:Task = this.taskList[id];
-       if(temp.status == TaskStatus.ACCEPTABLE){
-           temp.status = TaskStatus.DURING;
-       }
-       this.notify(temp);
-    }
-
     public addTask(task: Task) {
-       // var a = this.taskList["111"];
+        // var a = this.taskList["111"];
         this.taskList[task.id] = task;
     }
 
@@ -147,4 +199,31 @@ class TaskService {
         }
     }
 
+}
+
+interface TaskCondition {
+    onAccept(task: TaskConditionContext);
+    onSubmit(task: TaskConditionContext);
+}
+
+interface TaskConditionContext {
+    current: number;
+    checkStatus():void;
+}
+
+class NPCTalkTaskCondition implements TaskCondition {
+    onAccept(context: TaskConditionContext) {
+        context.current++;
+        //console.log("here");
+        context.checkStatus();
+    }
+
+    /*onAccept(task:Task){
+        task.current++;
+        task.current = task.total;
+    }*/
+
+    onSubmit() {
+
+    }
 }

@@ -101,7 +101,7 @@ class Main extends egret.DisplayObjectContainer {
         var NPC2y = 300;
 
         //var taskService:TaskService = new TaskService();       
-        var task: Task = new Task("000", "task1", "press NPC1 to finish task", "npc_0", "npc_1");
+        var task: Task = new Task("000", "task1", "press NPC1 to finish task", "npc_0", "npc_1", new NPCTalkTaskCondition());
         TaskService.getInstance().addTask(task);
 
         var NPC_1: NPC = new NPC("npc_0", "NPC1_png", NPC1x, NPC1y, "press the button \nto get task");
@@ -118,6 +118,14 @@ class Main extends egret.DisplayObjectContainer {
         this.addChild(taskPanel);
         this.addChild(NPC_1);
         this.addChild(NPC_2);
+
+        var monsterArray:Monster[] = [
+            new Monster(),
+            new Monster(),
+            new Monster()
+        ]
+        var monsters:Monsters = new Monsters(monsterArray);
+        this.addChild(monsters);
         //TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
         /*var service = TaskService.getInstance();
         var task = new Task("1111", "Hello world");

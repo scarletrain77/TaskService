@@ -1,16 +1,48 @@
+class Button extends egret.DisplayObjectContainer {
+    private _body: egret.Shape;
+    private _name: egret.TextField;
+
+    constructor(x:number, y:number, name:string) {
+        super();
+
+        this.x = x;
+        this.y = y;
+
+        var widthRec = 300;
+        var heightRec = 200;
+
+        this._body = new egret.Shape();
+        this._body.graphics.beginFill(0x66ccff, 1);
+        this._body.graphics.drawRoundRect(widthRec / 4, heightRec * 3 / 4, widthRec / 2, heightRec / 4, 20, 20);
+        this._body.graphics.endFill();
+
+
+        this._name = new egret.TextField();
+        this._name.text = name;
+        this._name.textColor = 0x000000;
+        this._name.x = widthRec / 4 + 35;
+        this._name.y = heightRec * 3 / 4 + 10;
+
+        this.addChild(this._body);
+        this.addChild(this._name);
+
+        this.touchEnabled = true;
+    }
+}
+
 class TaskPanel extends egret.DisplayObjectContainer implements Observer {
 
     private _body: egret.Shape;
     private _taskText: egret.TextField;
-    private _taskListText : egret.TextField;
+    private _taskListText: egret.TextField;
     private _statusText: egret.TextField;
-    private _statusListText:egret.TextField;
+    private _statusListText: egret.TextField;
 
     constructor(x: number, y: number) {
         super();
 
         var panelWidth = 600;
-        var panelHeight = panelWidth/2;
+        var panelHeight = panelWidth / 2;
         var blankHeight = 30;
 
         this.x = x;
@@ -35,7 +67,7 @@ class TaskPanel extends egret.DisplayObjectContainer implements Observer {
         this._statusText = new egret.TextField();
         this._statusText.text = "Status";
         this._statusText.textColor = 0x000000;
-        this._statusText.x = panelWidth*3/4;
+        this._statusText.x = panelWidth * 3 / 4;
         this._statusText.y = 0;
 
         this._statusListText = new egret.TextField();
@@ -62,9 +94,9 @@ class DialogPanel extends egret.DisplayObjectContainer {
     private _button: egret.Shape;
     private _buttonText: egret.TextField;
     private _body: egret.Shape;
-    private _taskText:egret.TextField;
+    private _taskText: egret.TextField;
 
-    constructor(taskString:string) {
+    constructor(taskString: string) {
         super();
 
         var widthRec = 300;
@@ -77,14 +109,14 @@ class DialogPanel extends egret.DisplayObjectContainer {
 
         this._button = new egret.Shape();
         this._button.graphics.beginFill(0x66ccff, 1);
-        this._button.graphics.drawRoundRect(widthRec/4, heightRec*3/4, widthRec / 2, heightRec / 4, 20, 20);
+        this._button.graphics.drawRoundRect(widthRec / 4, heightRec * 3 / 4, widthRec / 2, heightRec / 4, 20, 20);
         this._button.graphics.endFill();
 
         this._buttonText = new egret.TextField();
         this._buttonText.text = "Press";
         this._buttonText.textColor = 0x000000;
-        this._buttonText.x =widthRec/4 + 35;
-        this._buttonText.y = heightRec*3/4+10;
+        this._buttonText.x = widthRec / 4 + 35;
+        this._buttonText.y = heightRec * 3 / 4 + 10;
 
         this._taskText = new egret.TextField();
         this._taskText.text = taskString;

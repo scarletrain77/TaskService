@@ -11,6 +11,7 @@ var game_file_list = [
 	"bin-debug/ErrorCode.js",
 	"bin-debug/LoadingUI.js",
 	"bin-debug/Main.js",
+	"bin-debug/Monster.js",
 	"bin-debug/NPC.js",
 	"bin-debug/Observer.js",
 	"bin-debug/Panel.js",

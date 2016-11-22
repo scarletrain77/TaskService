@@ -1,3 +1,28 @@
+var Button = (function (_super) {
+    __extends(Button, _super);
+    function Button(x, y, name) {
+        _super.call(this);
+        this.x = x;
+        this.y = y;
+        var widthRec = 300;
+        var heightRec = 200;
+        this._body = new egret.Shape();
+        this._body.graphics.beginFill(0x66ccff, 1);
+        this._body.graphics.drawRoundRect(widthRec / 4, heightRec * 3 / 4, widthRec / 2, heightRec / 4, 20, 20);
+        this._body.graphics.endFill();
+        this._name = new egret.TextField();
+        this._name.text = name;
+        this._name.textColor = 0x000000;
+        this._name.x = widthRec / 4 + 35;
+        this._name.y = heightRec * 3 / 4 + 10;
+        this.addChild(this._body);
+        this.addChild(this._name);
+        this.touchEnabled = true;
+    }
+    var d = __define,c=Button,p=c.prototype;
+    return Button;
+}(egret.DisplayObjectContainer));
+egret.registerClass(Button,'Button');
 var TaskPanel = (function (_super) {
     __extends(TaskPanel, _super);
     function TaskPanel(x, y) {

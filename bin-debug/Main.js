@@ -84,7 +84,7 @@ var Main = (function (_super) {
         var NPC2x = 400;
         var NPC2y = 300;
         //var taskService:TaskService = new TaskService();       
-        var task = new Task("000", "task1", "press NPC1 to finish task", "npc_0", "npc_1");
+        var task = new Task("000", "task1", "press NPC1 to finish task", "npc_0", "npc_1", new NPCTalkTaskCondition());
         TaskService.getInstance().addTask(task);
         var NPC_1 = new NPC("npc_0", "NPC1_png", NPC1x, NPC1y, "press the button \nto get task");
         var NPC_2 = new NPC("npc_1", "NPC2_png", NPC2x, NPC2y, "press the button \nif you finish task");
@@ -95,6 +95,13 @@ var Main = (function (_super) {
         this.addChild(taskPanel);
         this.addChild(NPC_1);
         this.addChild(NPC_2);
+        var monsterArray = [
+            new Monster(),
+            new Monster(),
+            new Monster()
+        ];
+        var monsters = new Monsters(monsterArray);
+        this.addChild(monsters);
         //TaskService.getInstance().notify(TaskService.getInstance().getTaskByCustomRule());
         /*var service = TaskService.getInstance();
         var task = new Task("1111", "Hello world");

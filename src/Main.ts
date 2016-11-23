@@ -108,7 +108,7 @@ class Main extends egret.DisplayObjectContainer {
         TaskService.getInstance().addTask(task_2);
 
         var task_1: Task = new Task("001", "task1", "press NPC1 to finish task", "npc_0", "npc_1", new NPCTalkTaskCondition());
-        task_1.status = TaskStatus.UNACCEPTABLE;
+        task_1.status = TaskStatus.ACCEPTABLE;
         TaskService.getInstance().addTask(task_1);
 
         var NPC_1: NPC = new NPC("npc_0", "NPC1_png", NPC1x, NPC1y, "press the button \nto get task");

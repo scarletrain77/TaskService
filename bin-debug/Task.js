@@ -126,6 +126,7 @@ var MockKillMonsterBotton = (function (_super) {
         _super.call(this);
         this.subButton = new Button(50, 100, "Sub");
         this.subButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onClick, this);
+        this.subButton.touchEnabled = true;
         this.addChild(this.subButton);
     }
     var d = __define,c=MockKillMonsterBotton,p=c.prototype;

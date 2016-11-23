@@ -89,7 +89,7 @@ var Main = (function (_super) {
         task_2.total = 10;
         TaskService.getInstance().addTask(task_2);
         var task_1 = new Task("001", "task1", "press NPC1 to finish task", "npc_0", "npc_1", new NPCTalkTaskCondition());
-        task_1.status = TaskStatus.UNACCEPTABLE;
+        task_1.status = TaskStatus.ACCEPTABLE;
         TaskService.getInstance().addTask(task_1);
         var NPC_1 = new NPC("npc_0", "NPC1_png", NPC1x, NPC1y, "press the button \nto get task");
         var NPC_2 = new NPC("npc_1", "NPC2_png", NPC2x, NPC2y, "press the button \nif you finish task");

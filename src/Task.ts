@@ -142,14 +142,28 @@ class KillMonsterTaskCondition implements TaskCondition {
     }
 }
 
-class MockKillMonsterBotton {
+class MockKillMonsterBotton extends egret.DisplayObjectContainer implements Observer{
+    private subButton:Button;
+
     constructor() {
-        var sub = new Button(50, 100, "Sub");
+        super();
+        this.subButton = new Button(50, 100, "Sub");
+        this.subButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onClick, this);
+        this.subButton.touchEnabled =true;
+        this.addChild(this.subButton);
     }
 
     onClick() {
-        if (TaskService.getInstance().taskList["001"].status == TaskStatus.DURING) {
-
+        if (TaskService.getInstance().taskList["000"].status == TaskStatus.DURING && TaskService.getInstance().taskList["000"].total>=0) {
+            TaskService.getInstance().taskList["000"].total -- ;
         }
+        if(TaskService.getInstance().taskList["000"].total == 0){
+            TaskService.getInstance().taskList["000"].status = TaskStatus.CAN_SUBMIT;
+        }
+        TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
+    }
+
+    onChange(){
+
     }
 }

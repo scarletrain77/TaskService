@@ -120,16 +120,27 @@ var KillMonsterTaskCondition = (function () {
     return KillMonsterTaskCondition;
 }());
 egret.registerClass(KillMonsterTaskCondition,'KillMonsterTaskCondition',["TaskCondition"]);
-var MockKillMonsterBotton = (function () {
+var MockKillMonsterBotton = (function (_super) {
+    __extends(MockKillMonsterBotton, _super);
     function MockKillMonsterBotton() {
-        var sub = new Button(50, 100, "Sub");
+        _super.call(this);
+        this.subButton = new Button(50, 100, "Sub");
+        this.subButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onClick, this);
+        this.addChild(this.subButton);
     }
     var d = __define,c=MockKillMonsterBotton,p=c.prototype;
     p.onClick = function () {
-        if (TaskService.getInstance().taskList["001"].status == TaskStatus.DURING) {
+        if (TaskService.getInstance().taskList["000"].status == TaskStatus.DURING && TaskService.getInstance().taskList["000"].total >= 0) {
+            TaskService.getInstance().taskList["000"].total--;
         }
+        if (TaskService.getInstance().taskList["000"].total == 0) {
+            TaskService.getInstance().taskList["000"].status = TaskStatus.CAN_SUBMIT;
+        }
+        TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
+    };
+    p.onChange = function () {
     };
     return MockKillMonsterBotton;
-}());
-egret.registerClass(MockKillMonsterBotton,'MockKillMonsterBotton');
+}(egret.DisplayObjectContainer));
+egret.registerClass(MockKillMonsterBotton,'MockKillMonsterBotton',["Observer"]);
 //# sourceMappingURL=Task.js.map

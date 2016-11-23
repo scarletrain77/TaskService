@@ -175,6 +175,7 @@ class DialogPanel extends egret.DisplayObjectContainer {
             TaskService.getInstance().accept(TaskService.getInstance().getCurrentId());
         } else if (TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status == TaskStatus.CAN_SUBMIT) {
             TaskService.getInstance().submit(TaskService.getInstance().getCurrentId());
+            //TaskService.getInstance().notify(TaskService.getInstance().taskList[TaskService.getInstance().getNextId()]);
         } else {
             console.log("no taskStatus");
         }

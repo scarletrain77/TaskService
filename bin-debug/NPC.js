@@ -115,14 +115,14 @@ var NPC = (function (_super) {
     };
     p.onClick = function () {
         //this._dialog.panelFadeIn();
-        if (TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status == TaskStatus.ACCEPTABLE && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
+        if (TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status == TaskStatus.ACCEPTABLE && this._id == TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].fromNpcId) {
             this._dialog.panelFadeIn();
         }
-        else if (TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status == TaskStatus.CAN_SUBMIT && this._id == TaskService.getInstance().taskList["000"].toNpcId) {
+        else if (TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status == TaskStatus.CAN_SUBMIT && this._id == TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].toNpcId) {
             this._dialog.panelFadeIn();
         }
-        if (TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status == TaskStatus.DURING && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
-            TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status = TaskStatus.CAN_SUBMIT;
+        if (TaskService.getInstance().taskList["001"].status == TaskStatus.DURING && this._id == TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].fromNpcId) {
+            TaskService.getInstance().taskList["001"].status = TaskStatus.CAN_SUBMIT;
         }
         TaskService.getInstance().notify(TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()]);
     };

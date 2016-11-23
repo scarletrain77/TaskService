@@ -84,20 +84,25 @@ var Main = (function (_super) {
         var NPC2x = 400;
         var NPC2y = 300;
         //var taskService:TaskService = new TaskService();       
-        var task_1 = new Task("000", "task1", "press NPC1 to finish task", "npc_0", "npc_1", new NPCTalkTaskCondition());
-        TaskService.getInstance().addTask(task_1);
-        var task_2 = new Task("001", "task2", "press button to kill monsters", "npc_0", "npc_1", new KillMonsterTaskCondition());
-        task_2.status = TaskStatus.UNACCEPTABLE;
+        var task_2 = new Task("000", "task2", "press button to kill monsters", "npc_0", "npc_1", new KillMonsterTaskCondition());
+        //task_2.status = TaskStatus.UNACCEPTABLE;
+        task_2.total = 10;
         TaskService.getInstance().addTask(task_2);
+        var task_1 = new Task("001", "task1", "press NPC1 to finish task", "npc_0", "npc_1", new NPCTalkTaskCondition());
+        task_1.status = TaskStatus.UNACCEPTABLE;
+        TaskService.getInstance().addTask(task_1);
         var NPC_1 = new NPC("npc_0", "NPC1_png", NPC1x, NPC1y, "press the button \nto get task");
         var NPC_2 = new NPC("npc_1", "NPC2_png", NPC2x, NPC2y, "press the button \nif you finish task");
         var taskPanel = new TaskPanel(20, NPC2y + 500);
+        var monsterButton = new MockKillMonsterBotton();
         TaskService.getInstance().addObserver(taskPanel);
         TaskService.getInstance().addObserver(NPC_1);
         TaskService.getInstance().addObserver(NPC_2);
+        TaskService.getInstance().addObserver(monsterButton);
         this.addChild(taskPanel);
         this.addChild(NPC_1);
         this.addChild(NPC_2);
+        this.addChild(monsterButton);
         /* var monsterArray:Monster[] = [
              new Monster(),
              new Monster(),

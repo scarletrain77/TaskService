@@ -16,6 +16,7 @@ var game_file_list = [
 	"bin-debug/Observer.js",
 	"bin-debug/Panel.js",
 	"bin-debug/Task.js",
+	"bin-debug/TaskService.js",
 	//----auto game_file_list end----
 ];
 

@@ -2,7 +2,7 @@ class Button extends egret.DisplayObjectContainer {
     private _body: egret.Shape;
     private _name: egret.TextField;
 
-    constructor(x:number, y:number, name:string) {
+    constructor(x: number, y: number, name: string) {
         super();
 
         this.x = x;
@@ -34,16 +34,21 @@ class TaskPanel extends egret.DisplayObjectContainer implements Observer {
 
     private _body: egret.Shape;
     private _taskText: egret.TextField;
-    private _taskListText: egret.TextField;
+    //private _taskListText: egret.TextField[] = [];
+    private _taskListText:egret.TextField;
+    private _taskListText1:egret.TextField;
     private _statusText: egret.TextField;
     private _statusListText: egret.TextField;
+
+    private _taskListX: number;
+    private _taskListY: number;
+    private _blankHeight: number = 30;
 
     constructor(x: number, y: number) {
         super();
 
         var panelWidth = 600;
         var panelHeight = panelWidth / 2;
-        var blankHeight = 30;
 
         this.x = x;
         this.y = y;
@@ -62,7 +67,13 @@ class TaskPanel extends egret.DisplayObjectContainer implements Observer {
         this._taskListText.text = "";
         this._taskListText.textColor = 0x0000;
         this._taskListText.x = this._taskText.x;
-        this._taskListText.y = this._taskText.y + blankHeight;
+        this._taskListText.y = this._taskText.y + this._blankHeight;
+
+        this._taskListText1 = new egret.TextField();
+        this._taskListText1.text = "";
+        this._taskListText1.textColor = 0x0000;
+        this._taskListText1.x = this._taskListText.x;
+        this._taskListText1.y = this._taskListText.y + this._blankHeight;
 
         this._statusText = new egret.TextField();
         this._statusText.text = "Status";
@@ -74,20 +85,33 @@ class TaskPanel extends egret.DisplayObjectContainer implements Observer {
         this._statusListText.text = "";
         this._statusListText.textColor = 0x0000;
         this._statusListText.x = this._statusText.x;
-        this._statusListText.y = this._statusText.y + blankHeight;
+        this._statusListText.y = this._statusText.y + this._blankHeight;
 
         this.addChild(this._body);
         this.addChild(this._taskText);
         this.addChild(this._statusText);
         this.addChild(this._taskListText);
+        this.addChild(this._taskListText1);
         this.addChild(this._statusListText);
     }
 
     onChange(task: Task) {
+        //this.setTaskList(1, task.desc);
         this._taskListText.text = task.desc;
         this._statusListText.text = task.status.toString();
         console.log("Panel onChange" + task.name + task.status.toString());
     }
+
+    /*private setTaskList(i:number, text:string) {
+        var tasktext = new egret.TextField();
+        tasktext.text = text;
+        tasktext.textColor = 0x000000;
+        this._taskListY += this._blankHeight;
+        tasktext.x = this._taskListX;
+        tasktext.y = this._taskListY;
+
+        this._taskListText[i] = tasktext;
+    }*/
 }
 
 class DialogPanel extends egret.DisplayObjectContainer {
@@ -147,14 +171,14 @@ class DialogPanel extends egret.DisplayObjectContainer {
 
     private onClick(): void {
         this.panelFadeOut();
-        if (TaskService.getInstance().taskList["000"].status == TaskStatus.ACCEPTABLE) {
-            TaskService.getInstance().accept("000");
-        } else if (TaskService.getInstance().taskList["000"].status == TaskStatus.CAN_SUBMIT) {
-            TaskService.getInstance().finish("000");
+        if (TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status == TaskStatus.ACCEPTABLE) {
+            TaskService.getInstance().accept(TaskService.getInstance().getCurrentId());
+        } else if (TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status == TaskStatus.CAN_SUBMIT) {
+            TaskService.getInstance().submit(TaskService.getInstance().getCurrentId());
         } else {
             console.log("no taskStatus");
         }
         this.panelFadeOut();
-        TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
+        TaskService.getInstance().notify(TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()]);
     }
 }

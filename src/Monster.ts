@@ -11,18 +11,21 @@ class Monster extends egret.DisplayObjectContainer {
     }
 }
 
-class Monsters extends egret.DisplayObjectContainer {
+class Monsters extends egret.DisplayObjectContainer{
     private _monsters: Array<Monster>;
     private _number: number;
     private addButton: Button;
     private subButton: Button;
-    constructor(monsters:Monster[]) {
+    private _taskNumberString: string;
+
+    constructor(monsters: Monster[], taskNumberString: string) {
         super();
         this._monsters = new Array<Monster>();
 
         this._monsters = monsters;
 
         this._number = 0;
+        this._taskNumberString = taskNumberString;
 
         this.addButton = new Button(50, 100, "add");
         this.subButton = new Button(50, 200, "sub");
@@ -44,6 +47,9 @@ class Monsters extends egret.DisplayObjectContainer {
     private onClickAdd(): void {
         this._number++;
         console.log(this.number);
+        if(TaskService.getInstance().taskList[this._taskNumberString].status == TaskStatus.DURING){
+
+        }
     }
 
     private onClickSub(): void {

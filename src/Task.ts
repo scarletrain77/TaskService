@@ -1,3 +1,16 @@
+interface TaskCondition {
+    onAccept(task: TaskConditionContext);
+    onSubmit(task: TaskConditionContext);
+}
+
+interface TaskConditionContext {
+    //current: number;
+    // checkStatus():void;
+    getCurrent(): number;
+    setCurrent(value: number): void;
+}
+
+
 class Task implements TaskConditionContext {
     private _id: string;
     private _name: string;
@@ -19,14 +32,39 @@ class Task implements TaskConditionContext {
         this._toNpcId = toNpcId;
 
         this.condition = condition;
-        
+
     }
 
-    public get current():number{
+    checkStatus() {
+        /* if(this.current > this.total){
+             console.warn();
+         }*/
+        if (this._status == TaskStatus.DURING
+            && this._current >= this.total) {
+            this._status = TaskStatus.CAN_SUBMIT;
+        }
+        //notify
+        TaskService.getInstance().notify(this);
+    }
+
+    public onAccept() {
+        this.condition.onAccept(this);
+    }
+
+    public getCurrent(): number {
         return this._current;
     }
 
-    public set current(value:number){
+    public setCurrent(value: number) {
+        this._current = value;
+        this.checkStatus();
+    }
+
+    public get current(): number {
+        return this._current;
+    }
+
+    public set current(value: number) {
         this._current = value;
         this.checkStatus();
     }
@@ -59,25 +97,11 @@ class Task implements TaskConditionContext {
         this._status = value;
     }
 
-    checkStatus() {
-       /* if(this.current > this.total){
-            console.warn();
-        }*/
-        if (this._status == TaskStatus.DURING
-            && this._current >= this.total) {
-                this._status = TaskStatus.CAN_SUBMIT;
-        }
-        //notify
-        TaskService.getInstance().notify(this);
-    }
-
     public set desc(d: string) {
         this._desc = d;
     }
 
-    public onAccept() {
-        this.condition.onAccept(this);
-    }
+
 }
 /*
 interface Object{
@@ -88,134 +112,14 @@ interface Strategy{
     selector:Function;
 }*/
 
-class TaskService {
-    private static instance;
-    private static count: number = 0;
-    private observerList: Observer[] = [];
-    private taskList: {
-        [index: string]: Task
-    } = {
-        //"001":new Task("001", "a", "001", "002"),
-        //"002":new Task("002", "b", "003", "004")
-    };
-
-    constructor() {
-        TaskService.count++;
-        if (TaskService.count > 1) {
-            throw "singleton";
-        }
-    }
-
-    public static getInstance() {
-        if (TaskService.instance == null) {
-            TaskService.instance = new TaskService();
-        }
-        return TaskService.instance;
-    }
-
-    /*public getTaskByCustomStrategy(strategy:Strategy){
-        return strategy.selector(this.taskList);
-    }*/
-    public getTaskByCustomRule(rule: Function): Task {
-        //var clone = Object.assign({}, this.taskList);
-        //return rule(clone);
-        /*var canvas:HTMLCanvasElement;
-        var context = canvas.getContext("2d");*/
-        return rule(this.taskList);
-    }
-
-
-
-    /*public getTaskByCustonRule(rule:Function):Task{
-        return
-        for(var id in this.taskList){
-            var task = this.taskList[id];
-            if(task.status == TaskStatus.CAN_SUBMIT){
-                return task;
-            }
-        }
-         for(var id in this.taskList){
-            var task = this.taskList[id];
-            if(task.status == TaskStatus.ACCEPTABLE){
-                return task;
-            }
-        }
-    }*/
-
-    public submit(id: string): ErrorCode {
-        if (!id) {
-            return ErrorCode.ERROR_TASK;
-        }
-        let task = this.taskList[id];
-        if (!task) {
-            return ErrorCode.SUCCESS;
-        }
-        console.log("accept" + id);
-        if (task.status == TaskStatus.ACCEPTABLE) {
-            task.status = TaskStatus.DURING;
-            task.onAccept();
-            this.notify(task);
-            return ErrorCode.SUCCESS;
-        } else {
-            return ErrorCode.ERROR_TASK;
-        }
-    }
-
-    public accept(id: string) {
-        /*var temp:Task = this.taskList[id];
-        if(temp.status == TaskStatus.ACCEPTABLE){
-            temp.status = TaskStatus.DURING;
-        }
-        this.notify(temp);*/
-        if (!id) {
-            return ErrorCode.ERROR_TASK;
-        }
-        let task = this.taskList[id];
-        if (!task) {
-            return ErrorCode.SUCCESS;
-        }
-        console.log("accept" + id);
-        if (task.status == TaskStatus.CAN_SUBMIT) {
-            task.status = TaskStatus.SUBMITTED;
-            this.notify(task);
-            return ErrorCode.SUCCESS;
-        } else {
-            return ErrorCode.ERROR_TASK;
-        }
-    }
-
-    public addTask(task: Task) {
-        // var a = this.taskList["111"];
-        this.taskList[task.id] = task;
-    }
-
-    public addObserver(a: Observer) {
-        this.observerList.push(a);
-    }
-
-    private notify(task: Task) {
-        for (var observer of this.observerList) {
-            observer.onChange(task);
-        }
-    }
-
-}
-
-interface TaskCondition {
-    onAccept(task: TaskConditionContext);
-    onSubmit(task: TaskConditionContext);
-}
-
-interface TaskConditionContext {
-    current: number;
-    checkStatus():void;
-}
 
 class NPCTalkTaskCondition implements TaskCondition {
-    onAccept(context: TaskConditionContext) {
-        context.current++;
+    onAccept(task: TaskConditionContext) {
+        var current = 0;
+        current++;
+        task.setCurrent(current);
         //console.log("here");
-        context.checkStatus();
+        //   context.checkStatus();
     }
 
     /*onAccept(task:Task){
@@ -223,7 +127,29 @@ class NPCTalkTaskCondition implements TaskCondition {
         task.current = task.total;
     }*/
 
-    onSubmit() {
+    onSubmit(task: TaskConditionContext) {
 
+    }
+}
+
+class KillMonsterTaskCondition implements TaskCondition {
+    onAccept(task: TaskConditionContext) {
+        task.setCurrent(task.getCurrent());
+    }
+
+    onSubmit(task: TaskConditionContext) {
+
+    }
+}
+
+class MockKillMonsterBotton {
+    constructor() {
+        var sub = new Button(50, 100, "Sub");
+    }
+
+    onClick() {
+        if (TaskService.getInstance().taskList["001"].status == TaskStatus.DURING) {
+
+        }
     }
 }

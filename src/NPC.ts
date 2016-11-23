@@ -128,15 +128,15 @@ class NPC extends egret.DisplayObjectContainer implements Observer {
 
     private onClick() {
         //this._dialog.panelFadeIn();
-        if (TaskService.getInstance().taskList["000"].status == TaskStatus.ACCEPTABLE && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
+        if (TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status == TaskStatus.ACCEPTABLE && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
             this._dialog.panelFadeIn();
-        } else if (TaskService.getInstance().taskList["000"].status == TaskStatus.CAN_SUBMIT && this._id == TaskService.getInstance().taskList["000"].toNpcId) {
+        } else if (TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status == TaskStatus.CAN_SUBMIT && this._id == TaskService.getInstance().taskList["000"].toNpcId) {
             this._dialog.panelFadeIn();
         }
-        if (TaskService.getInstance().taskList["000"].status == TaskStatus.DURING && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
-            TaskService.getInstance().taskList["000"].status = TaskStatus.CAN_SUBMIT;
+        if (TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status == TaskStatus.DURING && this._id == TaskService.getInstance().taskList["000"].fromNpcId) {
+            TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()].status = TaskStatus.CAN_SUBMIT;
         }
-        TaskService.getInstance().notify(TaskService.getInstance().taskList["000"]);
+        TaskService.getInstance().notify(TaskService.getInstance().taskList[TaskService.getInstance().getCurrentId()]);
     }
 }
 

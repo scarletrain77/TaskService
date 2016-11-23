@@ -11,6 +11,27 @@ var Task = (function () {
         this.condition = condition;
     }
     var d = __define,c=Task,p=c.prototype;
+    p.checkStatus = function () {
+        /* if(this.current > this.total){
+             console.warn();
+         }*/
+        if (this._status == TaskStatus.DURING
+            && this._current >= this.total) {
+            this._status = TaskStatus.CAN_SUBMIT;
+        }
+        //notify
+        TaskService.getInstance().notify(this);
+    };
+    p.onAccept = function () {
+        this.condition.onAccept(this);
+    };
+    p.getCurrent = function () {
+        return this._current;
+    };
+    p.setCurrent = function (value) {
+        this._current = value;
+        this.checkStatus();
+    };
     d(p, "current"
         ,function () {
             return this._current;
@@ -56,20 +77,6 @@ var Task = (function () {
             this._desc = d;
         }
     );
-    p.checkStatus = function () {
-        /* if(this.current > this.total){
-             console.warn();
-         }*/
-        if (this._status == TaskStatus.DURING
-            && this._current >= this.total) {
-            this._status = TaskStatus.CAN_SUBMIT;
-        }
-        //notify
-        TaskService.getInstance().notify(this);
-    };
-    p.onAccept = function () {
-        this.condition.onAccept(this);
-    };
     return Task;
 }());
 egret.registerClass(Task,'Task',["TaskConditionContext"]);
@@ -81,122 +88,48 @@ interface Object{
 interface Strategy{
     selector:Function;
 }*/
-var TaskService = (function () {
-    function TaskService() {
-        this.observerList = [];
-        this.taskList = {};
-        TaskService.count++;
-        if (TaskService.count > 1) {
-            throw "singleton";
-        }
-    }
-    var d = __define,c=TaskService,p=c.prototype;
-    TaskService.getInstance = function () {
-        if (TaskService.instance == null) {
-            TaskService.instance = new TaskService();
-        }
-        return TaskService.instance;
-    };
-    /*public getTaskByCustomStrategy(strategy:Strategy){
-        return strategy.selector(this.taskList);
-    }*/
-    p.getTaskByCustomRule = function (rule) {
-        //var clone = Object.assign({}, this.taskList);
-        //return rule(clone);
-        /*var canvas:HTMLCanvasElement;
-        var context = canvas.getContext("2d");*/
-        return rule(this.taskList);
-    };
-    /*public getTaskByCustonRule(rule:Function):Task{
-        return
-        for(var id in this.taskList){
-            var task = this.taskList[id];
-            if(task.status == TaskStatus.CAN_SUBMIT){
-                return task;
-            }
-        }
-         for(var id in this.taskList){
-            var task = this.taskList[id];
-            if(task.status == TaskStatus.ACCEPTABLE){
-                return task;
-            }
-        }
-    }*/
-    p.submit = function (id) {
-        if (!id) {
-            return ErrorCode.ERROR_TASK;
-        }
-        var task = this.taskList[id];
-        if (!task) {
-            return ErrorCode.SUCCESS;
-        }
-        console.log("accept" + id);
-        if (task.status == TaskStatus.ACCEPTABLE) {
-            task.status = TaskStatus.DURING;
-            task.onAccept();
-            this.notify(task);
-            return ErrorCode.SUCCESS;
-        }
-        else {
-            return ErrorCode.ERROR_TASK;
-        }
-    };
-    p.accept = function (id) {
-        /*var temp:Task = this.taskList[id];
-        if(temp.status == TaskStatus.ACCEPTABLE){
-            temp.status = TaskStatus.DURING;
-        }
-        this.notify(temp);*/
-        if (!id) {
-            return ErrorCode.ERROR_TASK;
-        }
-        var task = this.taskList[id];
-        if (!task) {
-            return ErrorCode.SUCCESS;
-        }
-        console.log("accept" + id);
-        if (task.status == TaskStatus.CAN_SUBMIT) {
-            task.status = TaskStatus.SUBMITTED;
-            this.notify(task);
-            return ErrorCode.SUCCESS;
-        }
-        else {
-            return ErrorCode.ERROR_TASK;
-        }
-    };
-    p.addTask = function (task) {
-        // var a = this.taskList["111"];
-        this.taskList[task.id] = task;
-    };
-    p.addObserver = function (a) {
-        this.observerList.push(a);
-    };
-    p.notify = function (task) {
-        for (var _i = 0, _a = this.observerList; _i < _a.length; _i++) {
-            var observer = _a[_i];
-            observer.onChange(task);
-        }
-    };
-    TaskService.count = 0;
-    return TaskService;
-}());
-egret.registerClass(TaskService,'TaskService');
 var NPCTalkTaskCondition = (function () {
     function NPCTalkTaskCondition() {
     }
     var d = __define,c=NPCTalkTaskCondition,p=c.prototype;
-    p.onAccept = function (context) {
-        context.current++;
+    p.onAccept = function (task) {
+        var current = 0;
+        current++;
+        task.setCurrent(current);
         //console.log("here");
-        context.checkStatus();
+        //   context.checkStatus();
     };
     /*onAccept(task:Task){
         task.current++;
         task.current = task.total;
     }*/
-    p.onSubmit = function () {
+    p.onSubmit = function (task) {
     };
     return NPCTalkTaskCondition;
 }());
 egret.registerClass(NPCTalkTaskCondition,'NPCTalkTaskCondition',["TaskCondition"]);
+var KillMonsterTaskCondition = (function () {
+    function KillMonsterTaskCondition() {
+    }
+    var d = __define,c=KillMonsterTaskCondition,p=c.prototype;
+    p.onAccept = function (task) {
+        task.setCurrent(task.getCurrent());
+    };
+    p.onSubmit = function (task) {
+    };
+    return KillMonsterTaskCondition;
+}());
+egret.registerClass(KillMonsterTaskCondition,'KillMonsterTaskCondition',["TaskCondition"]);
+var MockKillMonsterBotton = (function () {
+    function MockKillMonsterBotton() {
+        var sub = new Button(50, 100, "Sub");
+    }
+    var d = __define,c=MockKillMonsterBotton,p=c.prototype;
+    p.onClick = function () {
+        if (TaskService.getInstance().taskList["001"].status == TaskStatus.DURING) {
+        }
+    };
+    return MockKillMonsterBotton;
+}());
+egret.registerClass(MockKillMonsterBotton,'MockKillMonsterBotton');
 //# sourceMappingURL=Task.js.map
